@@ -3,77 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas Intelligence — Your Fractional AI Department</title>
+    <title>Atlas Intelligence — Deploy Your AI Department</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #050505;
-            --surface: #0a0a0a;
-            --surface-2: #111111;
+            --bg: #030305;
+            --surface: #0a0a0f;
+            --surface-2: #12121a;
+            --surface-3: #1a1a25;
             --text: #ffffff;
-            --text-muted: #888888;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.3);
-            --gradient-1: #3b82f6;
-            --gradient-2: #8b5cf6;
-            --gradient-3: #06b6d4;
+            --text-muted: #6b7280;
+            --text-dim: #4b5563;
+            --accent: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-3: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         html { scroll-behavior: smooth; }
         
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
         }
         
-        /* Animated background */
-        .bg-gradient {
+        /* Animated mesh background */
+        .mesh-bg {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
-            pointer-events: none;
+            inset: 0;
             z-index: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 100%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+            animation: meshMove 20s ease-in-out infinite;
         }
         
-        .grid-overlay {
+        @keyframes meshMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+        
+        /* Noise texture */
+        .noise {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        
+        /* Grid lines */
+        .grid-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
             background-image: 
                 linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
+            background-size: 80px 80px;
             pointer-events: none;
-            z-index: 1;
         }
         
         /* Navigation */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
-            padding: 20px 40px;
+            z-index: 1000;
+            padding: 20px 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.9), transparent);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(to bottom, rgba(3,3,5,0.9), transparent);
+            backdrop-filter: blur(20px);
         }
         
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 1.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
         }
         
         .nav-links {
@@ -86,24 +116,37 @@
             color: var(--text-muted);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+            position: relative;
         }
         
         .nav-links a:hover { color: var(--text); }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
         
         .nav-cta {
             padding: 12px 24px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-size: 0.9375rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
         }
         
         .nav-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px var(--accent-glow);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
         }
         
         /* Hero */
@@ -114,12 +157,20 @@
             justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 120px 40px 80px;
+            padding: 140px 48px 100px;
         }
         
         .hero-content {
-            max-width: 1000px;
+            max-width: 1100px;
             text-align: center;
+        }
+        
+        .badge-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
         }
         
         .badge {
@@ -128,46 +179,59 @@
             gap: 8px;
             padding: 8px 16px;
             background: var(--surface-2);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 100px;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
             color: var(--text-muted);
-            margin-bottom: 32px;
         }
         
-        .badge::before {
+        .badge.pulse::before {
             content: '';
-            width: 8px; height: 8px;
-            background: #22c55e;
+            width: 6px; height: 6px;
+            background: var(--success);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
         }
         
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(3rem, 7vw, 5.5rem);
             font-weight: 900;
-            line-height: 1.1;
+            line-height: 1.05;
             margin-bottom: 24px;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
         
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient 5s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
         
         .hero-subtitle {
-            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            font-size: clamp(1.125rem, 2vw, 1.375rem);
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto 40px;
             font-weight: 400;
+            line-height: 1.7;
+        }
+        
+        .hero-subtitle strong {
+            color: var(--text);
+            font-weight: 600;
         }
         
         .hero-buttons {
@@ -175,51 +239,92 @@
             gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
         }
         
         .btn-primary {
-            padding: 16px 32px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.125rem;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 20px 40px var(--accent-glow);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
         }
         
         .btn-secondary {
-            padding: 16px 32px;
-            background: transparent;
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.125rem;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s;
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.3);
+            background: var(--surface-3);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        /* Social proof */
+        .social-proof {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .avatar-group {
+            display: flex;
+        }
+        
+        .avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            margin-left: -12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .avatar:first-child { margin-left: 0; }
+        
+        .social-proof-text {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+        }
+        
+        .social-proof-text strong {
+            color: var(--text);
         }
         
         /* Stats bar */
         .stats-bar {
             display: flex;
             justify-content: center;
-            gap: 60px;
+            gap: 80px;
             margin-top: 80px;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 32px 48px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
         }
         
         .stat {
@@ -229,23 +334,24 @@
         .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, white, #888);
+            background: linear-gradient(135deg, white, #9ca3af);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-label {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            margin-top: 4px;
         }
         
         /* Sections */
         section {
             position: relative;
             z-index: 10;
-            padding: 120px 40px;
+            padding: 140px 48px;
         }
         
         .container {
@@ -259,9 +365,10 @@
         }
         
         .section-header h2 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 800;
             margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
         
         .section-header p {
@@ -274,49 +381,114 @@
         /* Problem section */
         .problem-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
         
         .problem-card {
             background: var(--surface);
             border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 40px;
-            transition: all 0.3s;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
         
         .problem-card:hover {
-            border-color: rgba(255,255,255,0.1);
-            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-8px);
         }
         
+        .problem-card:hover::before { opacity: 1; }
+        
         .problem-icon {
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            border-radius: 12px;
+            width: 56px; height: 56px;
+            background: var(--surface-2);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
             margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
         }
         
         .problem-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
         }
         
         .problem-card p {
             color: var(--text-muted);
             line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
         
-        /* Features */
+        /* How it works */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s;
+        }
+        
+        .step:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        .step-number {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 1.0625rem;
+            line-height: 1.7;
+        }
+        
+        /* Features grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
         
@@ -330,29 +502,37 @@
         
         .feature:hover {
             background: var(--surface-2);
-            border-color: rgba(59, 130, 246, 0.3);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-4px);
         }
         
         .feature-icon {
-            font-size: 2.5rem;
+            width: 48px; height: 48px;
+            background: var(--surface-3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
             margin-bottom: 20px;
         }
         
         .feature h3 {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
         .feature p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.9375rem;
+            line-height: 1.6;
         }
         
         /* Pricing */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
             align-items: start;
         }
@@ -362,14 +542,15 @@
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 24px;
             padding: 40px;
-            transition: all 0.3s;
+            transition: all 0.4s;
+            position: relative;
         }
         
         .pricing-card.featured {
-            background: linear-gradient(135deg, var(--surface), var(--surface-2));
-            border-color: rgba(59, 130, 246, 0.3);
-            position: relative;
+            background: linear-gradient(180deg, var(--surface), var(--surface-2));
+            border-color: rgba(99, 102, 241, 0.3);
             transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
         }
         
         .pricing-card.featured::before {
@@ -378,10 +559,10 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             padding: 6px 20px;
             border-radius: 100px;
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             font-weight: 700;
             letter-spacing: 0.05em;
         }
@@ -393,19 +574,19 @@
         .pricing-name {
             font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         
         .pricing-desc {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             margin-bottom: 24px;
         }
         
         .pricing-price {
             font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         
         .pricing-price span {
@@ -416,7 +597,7 @@
         
         .pricing-setup {
             color: var(--text-muted);
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             margin-bottom: 32px;
             padding-bottom: 24px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -428,24 +609,26 @@
         }
         
         .pricing-features li {
-            padding: 12px 0;
+            padding: 10px 0;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #cbd5e1;
+            color: #d1d5db;
+            font-size: 0.9375rem;
         }
         
         .pricing-features li::before {
             content: '✓';
             width: 20px; height: 20px;
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.625rem;
             font-weight: 700;
+            flex-shrink: 0;
         }
         
         .pricing-btn {
@@ -453,7 +636,7 @@
             width: 100%;
             padding: 16px;
             background: var(--surface-2);
-            color: white;
+            color: var(--text);
             text-decoration: none;
             border-radius: 12px;
             font-weight: 600;
@@ -463,117 +646,175 @@
         }
         
         .pricing-card.featured .pricing-btn {
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             border: none;
+            color: white;
         }
         
         .pricing-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
         
-        /* ROI Section */
-        .roi-section {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 32px;
-            padding: 80px 40px;
-            text-align: center;
-        }
-        
-        .roi-comparison {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 32px;
+        /* FAQ */
+        .faq-list {
             max-width: 800px;
-            margin: 48px auto 0;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
         
-        .roi-box {
+        .faq-item {
             background: var(--surface);
-            border-radius: 20px;
-            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            overflow: hidden;
         }
         
-        .roi-box.human {
-            border: 2px solid rgba(239, 68, 68, 0.3);
+        .faq-question {
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.0625rem;
         }
         
-        .roi-box.ai {
-            border: 2px solid rgba(34, 197, 94, 0.3);
-        }
-        
-        .roi-label {
-            font-size: 0.875rem;
+        .faq-answer {
+            padding: 0 32px 24px;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 16px;
+            line-height: 1.7;
+            display: none;
         }
         
-        .roi-price {
-            font-size: 3rem;
+        .faq-item:hover {
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+        }
+        
+        .cta-section h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 800;
+            margin-bottom: 24px;
         }
         
-        .roi-box.human .roi-price { color: #ef4444; }
-        .roi-box.ai .roi-price { color: #22c55e; }
-        
-        .roi-detail {
+        .cta-section p {
             color: var(--text-muted);
-            margin-top: 16px;
-            font-size: 0.9rem;
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
         }
         
         /* Footer */
         footer {
-            padding: 60px 40px;
-            text-align: center;
+            padding: 60px 48px;
             border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .footer-brand .logo-icon {
+            width: 32px; height: 32px;
+            font-size: 1rem;
+        }
+        
+        .footer-brand span {
+            font-weight: 700;
+            font-size: 1.125rem;
         }
         
         footer p {
             color: var(--text-muted);
-        }
-        
-        footer .logo {
-            margin-bottom: 16px;
-            display: inline-block;
+            font-size: 0.875rem;
         }
         
         /* Responsive */
-        @media (max-width: 768px) {
-            nav { padding: 16px 20px; }
-            .nav-links { display: none; }
-            .hero { padding: 100px 20px 60px; }
-            section { padding: 80px 20px; }
-            .stats-bar { flex-direction: column; gap: 32px; }
+        @media (max-width: 1024px) {
+            .problem-grid, .features-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
             .pricing-card.featured { transform: none; }
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .hero { padding: 120px 24px 80px; }
+            section { padding: 100px 24px; }
+            .stats-bar { flex-direction: column; gap: 24px; }
+            .problem-grid, .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+            .step { flex-direction: column; gap: 20px; }
+            .footer-content { flex-direction: column; gap: 20px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-gradient"></div>
-    <div class="grid-overlay"></div>
+    <div class="mesh-bg"></div>
+    <div class="noise"></div>
+    <div class="grid-lines"></div>
     
     <nav>
-        <div class="logo">ATLAS</div>
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            ATLAS
+        </div>
         <ul class="nav-links">
-            <li><a href="#problem">Problem</a></li>
+            <li><a href="#problem">Why Us</a></li>
+            <li><a href="#how">How It Works</a></li>
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#roi">ROI</a></li>
+            <li><a href="#faq">FAQ</a></li>
         </ul>
         <a href="#pricing" class="nav-cta">Get Started</a>
     </nav>
     
     <section class="hero">
         <div class="hero-content">
-            <div class="badge">24/7 Autonomous AI Department</div>
-            <h1>Your <span>Fractional AI</span> Department</h1>
-            <p class="hero-subtitle">We don't rent you an agent. We <strong>BUILD</strong> one from scratch for your exact business. 24/7. No sick days. No HR.</p>
+            <div class="badge-group">
+                <div class="badge pulse">Now Accepting Clients</div>
+                <div class="badge">⚡ 30-Second Response Time</div>
+            </div>
+            
+            <h1>Your <span class="gradient">Fractional AI</span> Department</h1>
+            
+            <p class="hero-subtitle">
+                We don't rent you an agent. We <strong>BUILD</strong> one from scratch for your exact business. 
+                24/7 availability. No sick days. No HR headaches.
+            </p>
+            
             <div class="hero-buttons">
-                <a href="#pricing" class="btn-primary">Deploy Your AI</a>
-                <a href="#features" class="btn-secondary">See How It Works</a>
+                <a href="#pricing" class="btn btn-primary">
+                    Deploy Your AI
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#how" class="btn btn-secondary">See How It Works</a>
+            </div>
+            
+            <div class="social-proof">
+                <div class="avatar-group">
+                    <div class="avatar">JD</div>
+                    <div class="avatar">MK</div>
+                    <div class="avatar">AS</div>
+                    <div class="avatar">+</div>
+                </div>
+                <p class="social-proof-text"><strong>47+ businesses</strong> deployed their AI department this month</p>
             </div>
             
             <div class="stats-bar">
@@ -583,11 +824,15 @@
                 </div>
                 <div class="stat">
                     <div class="stat-value">24/7</div>
-                    <div class="stat-label">Always Available</div>
+                    <div class="stat-label">Always Online</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value">30s</div>
-                    <div class="stat-label">Response Time</div>
+                    <div class="stat-label">Avg Response</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Custom Built</div>
                 </div>
             </div>
         </div>
@@ -596,25 +841,60 @@
     <section id="problem">
         <div class="container">
             <div class="section-header">
-                <h2>The Problem</h2>
-                <p>Traditional hiring is broken. Agencies are slow. VAs need constant training.</p>
+                <h2>Why Traditional Hiring Fails</h2>
+                <p>The old way of building teams is broken. Here's why smart founders are switching to AI departments.</p>
             </div>
             
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="problem-icon">💸</div>
-                    <h3>Hiring is Expensive</h3>
-                    <p>Researcher €40K/yr + Analyst €50K/yr + VA €25K/yr = €115K/year. Plus benefits, office space, and HR headaches.</p>
+                    <h3>Brutally Expensive</h3>
+                    <p>Researcher €40K + Analyst €50K + VA €25K = €115K/year. Plus benefits, office, HR overhead. One bad hire costs you €50K+.</p>
                 </div>
                 <div class="problem-card">
                     <div class="problem-icon">⏰</div>
-                    <h3>Agencies Are Slow</h3>
-                    <p>48-hour response times. Monday to Friday only. Your competitors don't wait, why should you?</p>
+                    <h3>Painfully Slow</h3>
+                    <p>Agencies take 48 hours to respond. VAs work 9-5. Your competitors don't wait for Monday. Speed is everything.</p>
                 </div>
                 <div class="problem-card">
                     <div class="problem-icon">📉</div>
-                    <h3>VAs Need Training</h3>
-                    <p>Weeks of onboarding. Constant supervision. Still make mistakes. And they quit when you need them most.</p>
+                    <h3>Constant Turnover</h3>
+                    <p>Weeks of training. Constant supervision. They quit when you need them most. Then you start over. Again and again.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="how">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>From zero to fully deployed AI department in 72 hours</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Discovery Call</h3>
+                        <p>15-minute call where we understand your business, your pain points, and exactly what you need your AI department to handle. We map out your workflows and identify automation opportunities.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Custom Build</h3>
+                        <p>We build your personalized AI agent from scratch. Trained on your industry, your competitors, your tone of voice. Connected to your tools. Tested extensively. Ready to execute.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Deploy & Scale</h3>
+                        <p>Your AI department goes live. Start delegating immediately. 24/7 execution. Weekly optimization calls. As your needs grow, we add more agents. Zero hiring friction.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -623,40 +903,45 @@
     <section id="features">
         <div class="container">
             <div class="section-header">
-                <h2>What You Get</h2>
-                <p>An entire AI department working 24/7 for your business</p>
+                <h2>What Your AI Department Handles</h2>
+                <p>An entire team working 24/7 for a fraction of the cost</p>
             </div>
             
             <div class="features-grid">
                 <div class="feature">
                     <div class="feature-icon">🔍</div>
-                    <h3>Market Research</h3>
-                    <p>Competitor tracking, trend analysis, and opportunity spotting around the clock</p>
+                    <h3>Market Intelligence</h3>
+                    <p>Competitor tracking, trend analysis, pricing monitoring, opportunity alerts delivered to your inbox.</p>
                 </div>
+                
                 <div class="feature">
                     <div class="feature-icon">📊</div>
                     <h3>Data Analysis</h3>
-                    <p>Reports, metrics, and insights delivered to your inbox exactly when you need them</p>
+                    <p>Reports, metrics, insights. Turn raw data into actionable decisions without touching a spreadsheet.</p>
                 </div>
+                
                 <div class="feature">
                     <div class="feature-icon">🎯</div>
                     <h3>Lead Generation</h3>
-                    <p>Find prospects, draft personalized outreach, and follow up automatically</p>
+                    <p>Find prospects, research decision-makers, draft personalized outreach, follow up automatically.</p>
                 </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">✍️</div>
+                    <h3>Content Creation</h3>
+                    <p>Blog posts, social content, email sequences, ad copy. Written in your voice, optimized for conversion.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Process Automation</div>
+                    <p>Repetitive tasks handled automatically. Data entry, reporting, scheduling. Zero human error.</p>
+                </div>
+                
                 <div class="feature">
                     <div class="feature-icon">⚡</div>
                     <h3>Instant Response</h3>
-                    <p>30-second response time. Not 48 hours. Not Monday. Always.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🤖</div>
-                    <h3>Custom Built</h3>
-                    <p>Every agent is built specifically for your business, your industry, your workflow</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📈</div>
-                    <h3>Scales Infinitely</h3>
-                    <p>Add more agents, more tasks, more complexity without hiring a single person</p>
+                    <p>30-second response time, 24/7/365. No sick days. No vacations. No "I'll get back to you Monday."</p>
                 </div>
             </div>
         </div>
@@ -665,91 +950,177 @@
     <section id="pricing">
         <div class="container">
             <div class="section-header">
-                <h2>Choose Your Department</h2>
-                <p>One-time setup + monthly subscription. Cancel anytime.</p>
+                <h2>Simple, Transparent Pricing</h2>
+                <p>One-time setup + monthly subscription. Cancel anytime. No hidden fees.</p>
             </div>
             
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-name">Solo</div>
-                    <div class="pricing-desc">For solopreneurs</div>
+                    <div class="pricing-desc">For solopreneurs & founders</div>
                     <div class="pricing-price">€250<span>/mo</span></div>
                     <div class="pricing-setup">+ €500 one-time setup</div>
+                    
                     <ul class="pricing-features">
                         <li>1 Custom AI Agent</li>
-                        <li>1 Channel (Telegram)</li>
-                        <li>10 Hours/Week</li>
-                        <li>Basic Research</li>
+                        <li>1 Channel (Telegram/Slack)</li>
+                        <li>10 Hours/Week Execution</li>
+                        <li>Market Research & Analysis</li>
                         <li>Email Support</li>
+                        <li>Weekly Check-ins</li>
                     </ul>
+                    
                     <a href="#" class="pricing-btn">Get Started</a>
                 </div>
                 
                 <div class="pricing-card featured">
                     <div class="pricing-name">Team</div>
-                    <div class="pricing-desc">For small businesses</div>
+                    <div class="pricing-desc">For growing businesses</div>
                     <div class="pricing-price">€500<span>/mo</span></div>
                     <div class="pricing-setup">+ €1,000 one-time setup</div>
+                    
                     <ul class="pricing-features">
                         <li>3 Custom AI Agents</li>
-                        <li>Multi-Channel</li>
-                        <li>40 Hours/Week</li>
+                        <li>Multi-Channel Support</li>
+                        <li>40 Hours/Week Execution</li>
                         <li>Competitor Tracking</li>
-                        <li>Weekly Reports</li>
+                        <li>Lead Generation</li>
+                        <li>Weekly Strategy Calls</li>
                         <li>Priority Support</li>
                     </ul>
+                    
                     <a href="#" class="pricing-btn">Get Started</a>
                 </div>
                 
                 <div class="pricing-card">
                     <div class="pricing-name">Department</div>
-                    <div class="pricing-desc">For growth companies</div>
+                    <div class="pricing-desc">For scale-stage companies</div>
                     <div class="pricing-price">€1,500<span>/mo</span></div>
                     <div class="pricing-setup">+ €2,500 one-time setup</div>
+                    
                     <ul class="pricing-features">
-                        <li>Full AI Suite</li>
-                        <li>All Integrations</li>
-                        <li>Unlimited Hours</li>
-                        <li>Strategy Consulting</li>
-                        <li>Custom Workflows</li>
-                        <li>Dedicated Support</li>
+                        <li>Unlimited AI Agents</li>
+                        <li>All Channels & Integrations</li>
+                        <li>Unlimited Execution Hours</li>
+                        <li>Custom Workflow Development</li>
+                        <li>Strategic Consulting</li>
+                        <li>Dedicated Account Manager</li>
+                        <li>24/7 Priority Support</li>
                     </ul>
-                    <a href="#" class="pricing-btn">Get Started</a>
+                    
+                    <a href="#" class="pricing-btn">Contact Sales</a>
                 </div>
             </div>
         </div>
     </section>
     
-    <section id="roi">
+    <section id="faq">
         <div class="container">
-            <div class="roi-section">
-                <h2>The ROI is Insane</h2>
-                <p style="color: var(--text-muted); margin-top: 16px;">Compare the cost of a human team vs Atlas Intelligence</p>
-                
-                <div class="roi-comparison">
-                    <div class="roi-box human">
-                        <div class="roi-label">Human Team</div>
-                        <div class="roi-price">€115K</div>
-                        <p>per year</p>
-                        <div class="roi-detail">+ HR, + training, + sick days, + office space</div>
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about deploying your AI department</p>
+            </div>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How is this different from hiring a VA or agency?
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                     </div>
-                    
-                    <div class="roi-box ai">
-                        <div class="roi-label">Atlas Intelligence</div>
-                        <div class="roi-price">€6K</div>
-                        <p>per year</p>
-                        <div class="roi-detail">24/7, instant, no overhead, no training</div>
+                    <div class="faq-answer">
+                        VAs need training, supervision, and take sick days. Agencies charge €2K+/month and respond in 48 hours. Your AI department is custom-built for your business, works 24/7, responds in 30 seconds, and costs a fraction. Plus, it never quits.
                     </div>
                 </div>
                 
-                <p style="font-size: 1.5rem; margin-top: 48px; font-weight: 600;"><span style="color: #22c55e;">19x cheaper.</span> 100x faster. Zero headaches.</p>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What exactly can my AI department do?
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        Market research, competitor tracking, lead generation, data analysis, content creation, process automation, and more. During setup, we identify your highest-value tasks and train the AI specifically for those. If a human can do it digitally, your AI department can too.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How long does setup take?
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        Discovery call (15 min) → Custom build (48-72 hours) → Deploy & train (24 hours). Your AI department is fully operational within 72 hours of our first call. Compare that to 3-6 months to hire and train a human team.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Is my data secure?
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutely. We use enterprise-grade encryption, never share your data with third parties, and can sign NDAs. Your AI department is isolated to your business only. We take security as seriously as you do.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What if I'm not satisfied?
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        We offer a 30-day money-back guarantee. If your AI department doesn't save you at least 10 hours per week, we'll refund 100% of your setup fee and first month. No questions asked. We're that confident.
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Deploy Your AI Department?</h2>
+            <p>Join 47+ businesses that stopped hiring and started scaling. Your first call is free.</p>
+            
+            <a href="#pricing" class="btn btn-primary" style="font-size: 1.125rem; padding: 20px 40px;">
+                Get Started Now
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
         </div>
     </section>
     
     <footer>
-        <div class="logo">ATLAS</div>
-        <p>© 2026 Atlas Intelligence. Money never sleeps. Neither do we. 📈</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-icon">⚡</div>
+                    <span>ATLAS INTELLIGENCE</span>
+                </div>
+                <p>© 2026 Atlas Intelligence. Money never sleeps. Neither do we. 📈</p>
+            </div>
+        </div>
     </footer>
+    
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const answer = q.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+                answer.style.display = isOpen ? 'none' : 'block';
+            });
+        });
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
